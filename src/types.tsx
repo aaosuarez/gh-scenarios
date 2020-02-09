@@ -15,3 +15,8 @@ export type Scenario = {
     isUnlocked: boolean;
     isCompleted: boolean;
 }
+
+export type Scenarios = {
+    byId: { [key: string]: Scenario },
+    allIds: number[]
+};
