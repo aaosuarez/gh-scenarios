@@ -133,21 +133,38 @@ const graphDataFromScenarios = (scenarios: Scenarios): {
   nodes: Node[],
   links: Link[],
 } => {
-  const nodes = scenarios.allIds.map(id => {
-    const scenario = scenarios.byId[id];
+  const nodeFromScenario = (scenario: Scenario) => {
+    if (!scenario.isUnlocked) {
+      return null;
+    }
     return {
-      id: id.toString(),
+      id: scenario.id.toString(),
       name: scenario.name,
       color: scenario.isUnlocked ? scenario.isCompleted ? 'green' : 'blue' : 'lightgray',
     }
-  });
+  }
+
+  const linksFromScenario = (scenario: Scenario): Link[] => {
+    if (!scenario.isCompleted) {
+      return [];
+    }
+    return scenario.children.map(child => {
+      return scenarios.byId[child].isUnlocked ? {
+        source: scenario.id.toString(),
+        target: child
+      } : null;
+    }).filter(link => link != null) as Link[];
+  }
+
+  const nodes = scenarios.allIds.reduce((result: Node[], id) => {
+    const scenario = scenarios.byId[id];
+    const node = nodeFromScenario(scenario)
+    return node != null ? result.concat([node]) : result;
+  }, []);
 
   const links: Link[] = scenarios.allIds.reduce((result, id) => {
-    const scenarioLinks = scenarios.byId[id].children.map((child) => ({
-      source: id.toString(),
-      target: child,
-    }));
-    return result.concat(scenarioLinks);
+    const scenarioLinks = linksFromScenario(scenarios.byId[id]);
+    return scenarioLinks != null ? result.concat(scenarioLinks) : result;
   }, [] as Link[]);
 
   return {
@@ -155,6 +172,8 @@ const graphDataFromScenarios = (scenarios: Scenarios): {
     links,
   }
 }
+
+
 
 function App() {
   const [scenarios, setScenarios] = useState(initialScenarios);
@@ -164,8 +183,8 @@ function App() {
     node: {
       labelProperty: (node: Node) => (`#${node.id}: ${node.name}`)
     },
-    height: dimensions[0],
-    width: dimensions[1],
+    width: dimensions[0],
+    height: dimensions[1],
   };
 
   useEffect(() => {
