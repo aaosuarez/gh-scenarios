@@ -14,6 +14,7 @@ export type Scenario = {
     children: string[];
     isUnlocked: boolean;
     isCompleted: boolean;
+    blockedBy?: string[];
 }
 
 export type Scenarios = {
