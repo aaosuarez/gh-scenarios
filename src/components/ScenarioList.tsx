@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx, SerializedStyles } from '@emotion/core';
 import { Scenarios } from '../types';
 
 type ScenarioListProps = {
@@ -24,6 +24,27 @@ const idStyle = css({
     display: 'inline-block',
 });
 
+const defaultNameStyle = {
+    display: 'inline-block',
+    marginLeft: '4px',
+    cursor: 'pointer',
+
+}
+
+const unlockedStyle = {
+    textShadow: 'none',
+    color: 'black',
+}
+
+const nameUnlockedStyle = css(unlockedStyle);
+
+const nameLockedStyle = css({
+    textShadow: '0 0 8px rgba(0,0,0,.5)',
+    color: 'transparent',
+    ':hover': unlockedStyle,
+});
+
+
 const ScenarioList = ({ scenarios, onComplete, onUnlock }: ScenarioListProps) => {
     return (
         <ul css={listStyle}>
@@ -36,7 +57,7 @@ const ScenarioList = ({ scenarios, onComplete, onUnlock }: ScenarioListProps) =>
                     <span css={idStyle}>{scenario.id}</span>
                     <input type="checkbox" name="" id="" checked={scenario.isUnlocked} onChange={() => onUnlock(scenario.id)} />
                     <input type="checkbox" name="" id="" checked={scenario.isCompleted} onChange={() => onComplete(scenario.id)} />
-                    {` ${scenario.name}`}
+                    <span css={[defaultNameStyle, scenario.isUnlocked ? nameUnlockedStyle : nameLockedStyle]} onClick={() => onUnlock(scenario.id)}>{scenario.name}</span>
                 </li>)
             })}
         </ul>

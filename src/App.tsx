@@ -80,8 +80,6 @@ const graphDataFromScenarios = (scenarios: Scenarios): {
   }
 }
 
-
-
 function App() {
   const [scenarios, setScenarios] = useState(initialScenarios);
   const [dimensions, setDimensions] = useState<number[]>([window.innerWidth, window.innerHeight]);
