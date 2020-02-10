@@ -33,7 +33,7 @@ const defaultNameStyle = {
 
 const unlockedStyle = {
     textShadow: 'none',
-    color: 'black',
+    color: 'inherit',
 }
 
 const nameUnlockedStyle = css(unlockedStyle);

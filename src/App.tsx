@@ -4,8 +4,9 @@ import ScenarioList from './components/ScenarioList'
 import { Scenarios, Node, Link, Scenario } from './types';
 import { blankScenarios, currentScenarios } from './data';
 import './App.css';
+import './nyala.ttf';
 
-const initialScenarios = blankScenarios;
+const initialScenarios = currentScenarios;
 
 const graphDataFromScenarios = (scenarios: Scenarios): {
   nodes: Node[],
