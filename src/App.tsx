@@ -3,6 +3,7 @@ import { Graph } from 'react-d3-graph'
 import ScenarioList from './components/ScenarioList'
 import { Scenarios, Node, Link, Scenario } from './types';
 import { blankScenarios, currentScenarios } from './data';
+import { isBlocked } from './scenarioUtils';
 import './App.css';
 import './nyala.ttf';
 
@@ -12,17 +13,8 @@ const graphDataFromScenarios = (scenarios: Scenarios): {
   nodes: Node[],
   links: Link[],
 } => {
-  const isBlocked = (scenario: Scenario): boolean => {
-    if (scenario.blockedBy == null) {
-      return false;
-    }
-    return scenario.blockedBy.reduce((isBlocked: boolean, id) => {
-      return isBlocked || scenarios.byId[id].isCompleted
-    }, false)
-  }
-
   const getScenarioColor = (scenario: Scenario): string => {
-    if (isBlocked(scenario)) {
+    if (isBlocked(scenarios, scenario)) {
       return 'red';
     }
     if (scenario.isCompleted) {

@@ -1,6 +1,7 @@
 /** @jsx jsx */
-import { css, jsx, SerializedStyles } from '@emotion/core';
+import { css, jsx } from '@emotion/core';
 import { Scenarios } from '../types';
+import { isBlocked } from '../scenarioUtils';
 
 type ScenarioListProps = {
     scenarios: Scenarios;
@@ -28,7 +29,6 @@ const defaultNameStyle = {
     display: 'inline-block',
     marginLeft: '4px',
     cursor: 'pointer',
-
 }
 
 const unlockedStyle = {
@@ -44,21 +44,29 @@ const nameLockedStyle = css({
     ':hover': unlockedStyle,
 });
 
+const nameBlockedStyle = css({
+    textDecoration: 'line-through',
+    cursor: 'default'
+})
+
 
 const ScenarioList = ({ scenarios, onComplete, onUnlock }: ScenarioListProps) => {
     return (
         <ul css={listStyle}>
             {scenarios.allIds.map(id => {
-                const scenario = scenarios.byId[id]
+                const scenario = scenarios.byId[id];
+                const blocked = isBlocked(scenarios, scenario);
                 if (id == 0) {
                     return null;
                 }
-                return (<li key={id} css={listItemStyle}>
-                    <span css={idStyle}>{scenario.id}</span>
-                    <input type="checkbox" name="" id="" checked={scenario.isUnlocked} onChange={() => onUnlock(scenario.id)} />
-                    <input type="checkbox" name="" id="" checked={scenario.isCompleted} onChange={() => onComplete(scenario.id)} />
-                    <span css={[defaultNameStyle, scenario.isUnlocked ? nameUnlockedStyle : nameLockedStyle]} onClick={() => onUnlock(scenario.id)}>{scenario.name}</span>
-                </li>)
+                return (
+                    <li key={id} css={listItemStyle}>
+                        <span css={idStyle}>{scenario.id}</span>
+                        <input type="checkbox" name="" id="" checked={scenario.isUnlocked} onChange={() => onUnlock(scenario.id)} />
+                        <input type="checkbox" name="" id="" checked={scenario.isCompleted} onChange={() => onComplete(scenario.id)} disabled={blocked} />
+                        <span css={[defaultNameStyle, scenario.isUnlocked ? nameUnlockedStyle : nameLockedStyle, blocked ? nameBlockedStyle : null]} onClick={() => !blocked ? onUnlock(scenario.id) : null}>{scenario.name}</span>
+                    </li>
+                )
             })}
         </ul>
     )
